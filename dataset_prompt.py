@@ -15,11 +15,7 @@ def generate_prompt(question, answer) -> str:
 """.strip()
 
 def generate_prompt_2(question, answer) -> str:
-    return f"""[INST] <<SYS>>
-You are a helpful, respectful and honest assistant. Always answer as helpfully as possible, while being safe.  Your answers should not include any harmful, unethical, racist, sexist, toxic, dangerous, or illegal content. Please ensure that your responses are socially unbiased and positive in nature.
-
-If a question does not make any sense, or is not factually coherent, explain why instead of answering something not correct. If you don't know the answer to a question, please don't share false information.
-<</SYS>>
+    return f"""[INST] <<SYS>>Você é um assistente que responde perguntas sobre remédios. Responda o que for pedido.<</SYS>>
 {question.strip()}
 [/INST]
 
@@ -45,25 +41,30 @@ def process_dataset(data: Dataset):
         )
     )
 
-def generate_dataset():
+def generate_dataset(file, split):
+    if(file.endswith('.csv')):
+        data_frame = pd.read_csv(file, sep=';').dropna()
+        dataset = Dataset.from_pandas(data_frame)
+        return dataset
     
-    with open("bulas_question.txt", encoding="UTF8") as f:
-        a = json.load(f)
-    
-    my_data = pd.DataFrame(data=a)
-  #  subdata = my_data[5300:5350]
-    subdata = my_data
+    if(file.endswith('.txt')):
 
-    dataset = Dataset.from_pandas(subdata)
-    
-    test_size = 0.1
-    dataset_dict = process_dataset(dataset).train_test_split(test_size=test_size, shuffle=True)
-    test_valid = dataset_dict['test'].train_test_split(test_size=0.5)
+        with open(file, encoding="UTF8") as f:
+            a = json.load(f)
+        
+        data_frame = pd.DataFrame(data=a).dropna()
+    dataset = Dataset.from_pandas(data_frame)
+    if split:
+        test_size = 0.1
+        dataset_dict = process_dataset(dataset).train_test_split(test_size=test_size, shuffle=True)
+        test_valid = dataset_dict['test'].train_test_split(test_size=0.5)
 
-    final_dataset = DatasetDict({
-        'train': dataset_dict['train'],
-        'test': test_valid['test'],
-        'valid':test_valid['train']
-    })
+        final_dataset = DatasetDict({
+            'train': dataset_dict['train'],
+            'test': test_valid['test'],
+            'valid':test_valid['train']
+        })
 
-    return final_dataset
+        return final_dataset
+    else:
+        return process_dataset(dataset)
