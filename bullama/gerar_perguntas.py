@@ -51,7 +51,7 @@ class GeradorDePerguntasMedicamento:
         dados_2 = []
         for _, row in self.df.iterrows():
             nome = row["Nome"]
-            for coluna, perguntas in zip(self.df.columns[2:], 
+            for coluna, perguntas in zip(self.df.columns[1:], 
                                      [self.perguntas_sobre_remedio_serve, self.perguntas_sobre_como_usar, 
                                       self.perguntas_sobre_efeitos_colaterais, self.perguntas_sobre_contraindicacoes, 
                                       self.perguntas_sobre_mecanismo_de_acao]):

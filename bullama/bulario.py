@@ -3,7 +3,7 @@
 import json
 
 import pandas as pd
-from bullama import questions, web_scrapping
+from bullama import web_scrapping
 
 from enum import Enum
  
@@ -149,26 +149,6 @@ def criar_novas_perguntas(list_perguntas, nome_remedio, resposta):
     }
     list_aux.append(dict)
   return list_aux
-
-def cria_lista_perguntas(df):
-  list_dict = []
-  for index, row in df.iterrows():
-    if row['Para que serve?']:
-      new_perguntas = criar_novas_perguntas(questions.perguntas_sobre_remedio_serve, row['Nome'], row['Para que serve?'])
-      list_dict.extend(new_perguntas)
-    if row['Como usar?']:
-      new_perguntas = criar_novas_perguntas(questions.perguntas_sobre_como_usar, row['Nome'], row['Como usar?'])
-      list_dict.extend(new_perguntas)
-    if row['Quais os males que pode me causar?']:
-      new_perguntas = criar_novas_perguntas(questions.perguntas_sobre_efeitos_colaterais, row['Nome'], row['Quais os males que pode me causar?'])
-      list_dict.extend(new_perguntas)
-    if row['Quando não devo usar?']:
-      new_perguntas = criar_novas_perguntas(questions.perguntas_sobre_contraindicacoes, row['Nome'], row['Quando não devo usar?'])
-      list_dict.extend(new_perguntas)
-    if row['Como funciona?']:
-      new_perguntas = criar_novas_perguntas(questions.perguntas_sobre_mecanismo_de_acao, row['Nome'], row['Como funciona?'])
-      list_dict.extend(new_perguntas)
-  return list_dict
 
 def get_pagination(url_base, soup):
   list_pages = []
