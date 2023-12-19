@@ -30,7 +30,6 @@ Para treinar com as instruções, use esse comando:
 
 ```
 python train_questions.py
-
 ```
 Para treinar com o texto corrido, use esse comando:
 
@@ -46,7 +45,6 @@ Para gerar as respostas de inferência, execute cada um dos comandos. Eles se re
 python evaluate.py plain_text
 python evaluate.py questions
 python evaluate.py vanilla
-
 ```
 
 
