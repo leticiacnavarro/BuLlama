@@ -12,45 +12,42 @@ Recentemente, avanços significativos no processamento de linguagem natural, esp
 
 Antes de executar o código, instale as bibliotecas requeridas:
 
-´´´
+```
  pip install -r requirements.txt
-
-´´´
+```
 
 ### Dataset
 
 Para criar os datasets, baixando os dados do https://www.bulario.com/ use esse comando:
 
-´´´
+```
 python create_datasets.py
-
-´´´
+```
 
 ### Treinando
 
 Para treinar com as instruções, use esse comando:
 
-´´´
+```
 python train_questions.py
 
-´´´
+```
 Para treinar com o texto corrido, use esse comando:
 
-´´´
+```
 python train_plaintext.py
-
-´´´
+```
 
 ### Evaluate
 
 Para gerar as respostas de inferência, execute cada um dos comandos. Eles se referem as respostas dos treinos com as intruções, com o texto corrido, e com o modelo sem treino (vanilla):
 
-´´´
+```
 python evaluate.py plain_text
 python evaluate.py questions
 python evaluate.py vanilla
 
-´´´
+```
 
 
 ## License
