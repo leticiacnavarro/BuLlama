@@ -34,11 +34,12 @@ def prepare_model(model):
     return model
 
 def create_model_tokenizer(model_name, quantizer, local):
-
+    
     if local:     
         model_id = model_name   
     else:
         model_id = f"meta-llama/Llama-2-{model_name}-chat-hf"
+
 
     model = get_model(model_id, quantizer)
     tokenizer = get_tokenizer(model_id=model_id)

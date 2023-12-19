@@ -1,7 +1,7 @@
 
 
 import json
-
+import tqdm
 import pandas as pd
 from bullama import web_scrapping
 
@@ -20,15 +20,21 @@ class Bulario():
         
         all_urls = []
 
-        for letter in list(map(chr, range(97, 123))):
-            url_letter = f"https://www.bulario.com/alfa/{letter}/"
-            all_urls.append(url_letter)
-            page_letter = web_scrapping.get_page(url_letter, True)
-            all_urls.extend(get_pagination(url_base, page_letter))
         
+        for letter in tqdm.tqdm(list(map(chr, range(97, 123))), desc="Getting the URLs for each letter"):
+            url_letter = f"https://www.bulario.com/alfa/{letter}/"
+
+            try:
+
+              all_urls.append(url_letter)
+              page_letter = web_scrapping.get_page(url_letter, True)
+              all_urls.extend(get_pagination(url_base, page_letter))
+
+            except:
+              print(f"Erro em {url_letter}")
         all_drug_urls = []
 
-        for url in all_urls:
+        for url in tqdm.tqdm(all_urls, desc="Getting the URLs for each medication"):
             page_letter = web_scrapping.get_page(url, True)
             all_drug_urls.extend(get_drug_list(url_base, page_letter))
         self.all_drug_urls = all_drug_urls
@@ -37,13 +43,13 @@ class Bulario():
         self.df_bulas = pd.DataFrame()
 
         if self.type_bulario is BularioType.Questions:
-            for url in self.all_drug_urls:
+            for url in tqdm.tqdm(self.all_drug_urls, desc="Getting all questions from each medication"):
                 self.df_bulas = get_df_row_bula(url, self.df_bulas)
 
           #  self.list_dict = cria_lista_perguntas(self.df_bulas)            
 
         else:
-            for url in self.all_drug_urls:
+            for url in tqdm.tqdm(self.all_drug_urls, desc="Getting all raw text from each medication"):
                 page = web_scrapping.get_page(url, True)
                 if page:
                     bula_page = get_bula_page(page)
@@ -152,18 +158,20 @@ def criar_novas_perguntas(list_perguntas, nome_remedio, resposta):
 
 def get_pagination(url_base, soup):
   list_pages = []
-  pagination = soup.find(attrs={"class": "pagination"})
-  if pagination:
-    pagination = pagination("a")
-    for el in pagination:
-      url_pagina = url_base + el['href']
-      list_pages.append(url_pagina)
+  if soup:
+    pagination = soup.find(attrs={"class": "pagination"})
+    if pagination:
+      pagination = pagination("a")
+      for el in pagination:
+        url_pagina = url_base + el['href']
+        list_pages.append(url_pagina)
   return list(dict.fromkeys(list_pages))
 
 def get_drug_list(url_base, soup):
   drug_list = []
-  lista = soup.find(attrs={"class": "lists_list"})("a")
-  for el in lista:
-    url_remedio = url_base + el['href']
-    drug_list.append(url_remedio)
+  if soup:
+    lista = soup.find(attrs={"class": "lists_list"})("a")
+    for el in lista:
+      url_remedio = url_base + el['href']
+      drug_list.append(url_remedio)
   return list(dict.fromkeys(drug_list))
